@@ -1,0 +1,25 @@
+# db/docker-compose.yml
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    env_file:
+      - ./docker-compose.env
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cityportal
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5440:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d cityportal"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db_data:
