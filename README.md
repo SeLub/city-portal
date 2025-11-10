@@ -68,216 +68,122 @@ A modern, scalable city portal for classified listings (goods, jobs, autos, real
 git clone https://github.com/your-username/city-portal.git
 cd city-portal
 pnpm install
+```
+### 2. Set Up Environment Files 
+#### Backend (.env)
 
-2. Set Up Environment Files 
-Backend (.env)
-
-# apps/backend/.env
+##### apps/backend/.env
+```
 PORT=3001
 DATABASE_URL="postgresql://postgres:postgres@localhost:5440/cityportal?schema=public"
 JWT_SECRET="your_32_byte_strong_secret_here_1234567890ab"
-
-# Tebi S3-compatible storage
+```
+##### Tebi S3-compatible storage
+```
 TEIBI_ENDPOINT=https://s3.tebi.io
 TEIBI_ACCESS_KEY=your_tebi_access_key
 TEIBI_SECRET_KEY=your_tebi_secret_key
 TEIBI_BUCKET=your-city-portal-bucket
+```
+#### Frontend (.env.local) 
 
-Frontend (.env.local) 
-env
- 
- 
-1
-2
-3
-# apps/frontend/.env.local
+##### apps/frontend/.env.local
+```
 NEXT_PUBLIC_API_URL=http://localhost:3001
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
  
- 
-
-    💡 Generate JWT_SECRET with:   
-    bash
-     
-
-     
-    1
-    openssl rand -hex 32
-     
-     
-     
-
-3. Start PostgreSQL 
-bash
- 
- 
-1
-2
+## 💡 Generate JWT_SECRET with:  
+``` 
+openssl rand -hex 32
+```     
+### 3. Start PostgreSQL 
+```
 cd db
 docker-compose up -d
+```
  
- 
-4. Run Migrations 
-bash
- 
- 
-1
-2
+### 4. Run Migrations 
+```
 cd apps/backend
 pnpm prisma migrate dev --name init
+```
  
- 
-5. Start Services 
+### 5. Start Services 
 
-Terminal 1 (Backend): 
-bash
- 
- 
-1
-2
+#### Terminal 1 (Backend): 
+```
 cd apps/backend
 pnpm run dev
- 
- 
-
-Terminal 2 (Frontend): 
-bash
- 
- 
-1
-2
+```
+#### Terminal 2 (Frontend): 
+```
 cd apps/frontend
 pnpm run dev
+``` 
  
- 
-6. Access the App 
+### 6. Access the App 
+- Frontend: http://localhost:3000 
+- Backend API: http://localhost:3001 
+- Swagger Docs: http://localhost:3001/api/docs 
 
-    Frontend: http://localhost:3000 
-    Backend API: http://localhost:3001 
-    Swagger Docs: http://localhost:3001/api/docs 
+## 🗂️ Project Structure 
 
-🗂️ Project Structure 
- 
- 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-city-portal/
-├── apps/
-│   ├── backend/              # NestJS server
-│   │   ├── src/
-│   │   │   ├── modules/
-│   │   │   ├── prisma/
-│   │   │   └── common/services/  # FileService, etc.
-│   │   └── prisma/schema.prisma
-│   │
-│   └── frontend/             # Next.js 15 App Router
-│       ├── src/app/
-│       │   ├── (auth)/       # Auth pages (login, register)
-│       │   ├── (dashboard)/  # Admin dashboard layout
-│       │   ├── profile/      # User profile page
-│       │   └── listings/     # Listing CRUD pages
-│       └── src/components/
-│
-├── db/                       # PostgreSQL via Docker
-│   ├── docker-compose.yml
-│   └── docker-compose.env
-│
-└── package.json              # pnpm workspaces root
+city-portal/  
+├── apps/  
+│   ├── backend/              # NestJS server  
+│   │   ├── src/  
+│   │   │   ├── modules/  
+│   │   │   ├── prisma/  
+│   │   │   └── common/services/  # FileService, etc.  
+│   │   └── prisma/schema.prisma  
+│   │  
+│   └── frontend/             # Next.js 15 App Router  
+│       ├── src/app/  
+│       │   ├── (auth)/       # Auth pages (login, register)  
+│       │   ├── (dashboard)/  # Admin dashboard layout  
+│       │   ├── profile/      # User profile page  
+│       │   └── listings/     # Listing CRUD pages  
+│       └── src/components/  
+│  
+├── db/                       # PostgreSQL via Docker  
+│   ├── docker-compose.yml  
+│   └── docker-compose.env  
+│  
+└── package.json              # pnpm workspaces root  
  
  
  
-🧪 Testing Endpoints 
-Auth 
-bash
- 
- 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-# Register
+## 🧪 Testing Endpoints 
+
+### Register
+```
 curl -X POST http://localhost:3001/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"secure123"}'
-
-# Login → sets `auth_token` cookie
+```
+### Login → sets `auth_token` cookie
+```
 curl -X POST http://localhost:3001/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"secure123"}' \
   -c cookies.txt
-
-# Get profile
+```
+### Get profile
+```
 curl http://localhost:3001/auth/me -b cookies.txt
+```
  
- 
-File Upload (Avatar) 
-bash
- 
- 
-1
-2
-3
+### File Upload (Avatar) 
+```
 curl -X POST http://localhost:3001/auth/upload/avatar \
   -b cookies.txt \
   -F "file=@avatar.jpg"
- 
- 
- 
-🛡️ Tebi.io Bucket Policy 
+```
+## 🛡️ Tebi.io Bucket Policy 
 
 For full functionality, apply this bucket policy in your Tebi client panel: 
-json
- 
- 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-⌄
-⌄
-⌄
-⌄
+```
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -294,40 +200,30 @@ json
     }
   ]
 }
- 
- 
+``` 
+Replace your-city-portal-bucket with your actual bucket name. 
+## 📈 Future Roadmap 
 
-    Replace your-city-portal-bucket with your actual bucket name. 
-     
+- Forum & Blog modules
+- Stripe payment integration
+- Email notifications (Resend / SMTP)
+- Advanced search with filters
+- Mobile app (React Native)
+- Multi-city support
+- Admin moderation tools
 
- 
-📈 Future Roadmap 
+## 🤝 Contributing 
 
-    Forum & Blog modules
-    Stripe payment integration
-    Email notifications (Resend / SMTP)
-    Advanced search with filters
-    Mobile app (React Native)
-    Multi-city support
-    Admin moderation tools
-     
+## PRs welcome! Please follow: 
 
- 
-🤝 Contributing 
+- Feature branches (feature/xyz)
+- Conventional commits
+- Type-safe code
+- Update README if needed
 
-PRs welcome! Please follow: 
-
-    Feature branches (feature/xyz)
-    Conventional commits
-    Type-safe code
-    Update README if needed
-     
-
- 
-📄 License 
+## 📄 License 
 
 MIT © 2025 — Built with ❤️ for open, connected communities. 
- 
 
 Made with:
 Next.js  • NestJS  • Prisma  • Tebi.io  • PostgreSQL  • Tailwind CSS  
